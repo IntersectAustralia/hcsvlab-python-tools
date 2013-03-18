@@ -14,7 +14,7 @@ class Query(object):
     '''
     
 
-    def __init__(self, url="http://gsw1-hcsvlab-test3-vm.intersect.org.au/documents.json"):
+    def __init__(self, url="http://gsw1-hcsvlab-test3-vm.intersect.org.au:8080/documents.json"):
         '''
         Constructor
         '''
@@ -46,8 +46,8 @@ class Query(object):
             for url in urls:
                 filename = url.split('/')[-1]
                 outfile = open(os.path.join(directory, filename), 'w')
-                sys.stdout.write("\rDownloading file {0} of {1}".format(file_count, total))
-                outfile.write(requests.get(url).text)
+                sys.stdout.write("\rDownloading file {0} of {1}: {2}".format(file_count, total, filename))
+                outfile.write(requests.get(url).text.encode('utf8'))
                 outfile.close()
                 file_count += 1
             sys.stdout.write('\n')
