@@ -1,0 +1,7 @@
+Package: hcsvlab
+Version: 1.0
+License: GPL (>=3)
+Description: hcsvlab client
+Title: hcsvlab client
+Author: Theeban
+Maintainer: Theeban <theeban@intersect.org.au>
