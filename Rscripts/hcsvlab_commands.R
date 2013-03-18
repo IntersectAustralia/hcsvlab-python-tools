@@ -10,23 +10,23 @@ formatStr <- function(s) {
 	return (paste('"', s, '"', sep=""))
 }
 
-downloadCorpus <- function(url, corpus, params = list()) {
-	pythonExec = "~/hcsvlab-python-tools/hcsvlab/query.py"
-	args = ""
-	# construct params str
+addLine <- function(s1, s2, sep=";") {
+	return (paste(s1, sep, s2))
+}
+
+downloadCorpus <- function(url, corpus_dir, params = list()) {
+	python_cmd = "from hcsvlab.query import Query"
+	python_cmd = addLine(python_cmd, paste("query = Query('", url, "')", sep=""))
+	python_cmd = addLine(python_cmd, "params = {}")
+	# construct args
 	if (length(params) > 0) {
-		i = 0
 		for (key in names(params)) {
-			args = paste(args, key, "=", formatStr(params[[key]]), sep="")
-			if (i < length(params) - 1) {
-				args = paste(args, ",", sep="")
-			}
-			i = i + 1
+			python_cmd = addLine(python_cmd, paste("params['", key, "']='", params[[key]], "'", sep=""))
 		}
 	}
-	
-	sysCommand = paste("python", pythonExec, formatStr(url), formatStr(corpus), formatStr(args))
-	#print(sysCommand)
+	python_cmd = addLine(python_cmd, "query.query(params)")
+	python_cmd = addLine(python_cmd, paste("query.download('", corpus_dir, "')", sep=""))
+	print(paste("python -c", formatStr(python_cmd)))
 
-	system(sysCommand)
+	system(paste("python -c", formatStr(python_cmd)))
 }
