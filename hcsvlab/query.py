@@ -7,6 +7,7 @@ Created on 11/03/2013
 import requests
 import os.path
 import sys
+import argparse
 
 class Query(object):
     '''
@@ -54,5 +55,44 @@ class Query(object):
             print "Success! %s files downloaded to '%s'" % (total, directory)
         except:
             print "No query has been executed"
+
+    @staticmethod
+    def parse_params(params_str):
+        try:
+            params_list = params_str.split(",")
+            params_hash = {}
+            for param in params_list:
+                p = param.split("=")
+                params_hash[p[0]] = p[1]
+            return params_hash
+        except:
+            print "Couldn't parse params"
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Download corpus documents based on query")
+
+    parser.add_argument("url", metavar="url",
+                      help="documents list url")
+
+    parser.add_argument("corpus_dir", metavar="corpus_dir",
+                      help="directory to download corpus to")
+
+    parser.add_argument("query",
+                      help="documents query string", nargs='?')
+
+    namespace, extra = parser.parse_known_args()
+
+    try:
+        if namespace.query:
+            params = Query.parse_params(namespace.query)
+        else:
+            params = {}
+        
+        query = Query(namespace.url)
+        query.query(params)
+        #query.summary()
+        query.download(namespace.corpus_dir)
+    except:
+        print "Could not download documents"
             
 
